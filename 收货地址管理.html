@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="user-scalable=0, initial-scale=1.0, width=device-width">
+		<title></title>
+		<style type="text/css">
+			*{margin: 0;padding: 0;}
+			body{background: #E7EBEE;text-align: center;}
+			.adressList{list-style: none;padding: 7px;}
+			.adressList li{background: white;padding-bottom: 10px;margin-bottom: 20px;}
+			.adressList span{display: inline-block;width: 95%;text-align: left;height: 30px;line-height: 30px;}
+			.adressList .first{border-bottom: 1px solid #EEEEEE;color: red;height: 40px;line-height: 40px;margin-bottom: 10px;}
+			.adressList span i{font-style: normal;}
+			.adressList span a{float: right;margin: 0 5px;color: red;}
+			#modal{height: 100%;width: 100%;background: rgba(0,0,0,.3);position: fixed;top: 0;bottom: 0;}
+			.alertBox{position: absolute;margin: auto;top: 0;right: 0;left: 0;bottom: 0;width: 80%;height: 30%;border: 1px solid #EEEEEE;border-radius: 8px;text-align: center;background: white;padding-top: 30px;}
+			.alertBox input{display: inline-block;height: 30px;line-height: 30px;border: 1px solid #EEEEEE;border-radius: 5px;margin: 10px 0;padding: 0 10px;width: 70%;}
+			.alertBox button{display: inline-block;margin: 20px;height: 30px;line-height: 30px;width: 20%;border-radius: 5px;border: none;background: #428BCA;color: white;}
+			.addBtn{display: inline-block;width: 85%;height: 35px;color: white;line-height: 35px;background: #428BCA;border-radius: 7px;text-align: center;border: none;}
+		</style>
+	</head>
+	<body ng-app='myApp' ng-controller='ctrl'>
+		<ul class="adressList">
+			<li ng-repeat='item in arr'>
+				<span ng-class='{first:$index==0?true:false}'><i ng-click='change($index)'>{{ $index==0?'默认地址':'设为默认地址' }}</i><a ng-click='del($index)'>删除</a><a ng-click='xiugai(item,$index)'>编辑</a></span>
+				<span>{{ item.name }}　{{ item.tel }}</span>
+				<span>{{ item.adress }}</span>
+			</li>
+		</ul>
+		<button type="button" class="addBtn" ng-click='addAdr()'>+添加新地址</button>
+		<div id="modal" ng-show='showing'>
+			<div class="alertBox">
+				姓名：<input type="text" ng-model='gai.name'/><br />
+				电话：<input type="number" ng-model='gai.tel'/><br />
+				地址：<input type="text" ng-model='gai.adress'/><br />
+				<button ng-click='ok()'>确定</button><button ng-click='cancle()'>取消</button>
+			</div>
+		</div>
+		
+	</body>
+</html>
+<script src="../js/angular.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	var myApp = angular.module('myApp',[]);
+	myApp.controller('ctrl',function ($scope) {
+		$scope.gai={};
+		$scope.showing = false;
+		$scope.arr=[
+					{name:'唐唐',tel:1234123124123,adress:'东土大唐'},
+					{name:'悟空',tel:1234123,adress:'花果山水帘洞'},
+					{name:'八戒',tel:17563124123,adress:'高老庄'},
+					{name:'沙悟净',tel:234123,adress:'流沙河'},
+					{name:'玉兔精',tel:1264563,adress:'广寒宫'}
+				];
+		$scope.xiugai = function (obj,index) {
+			$scope.gai.name = obj.name;
+			$scope.gai.tel = obj.tel;
+			$scope.gai.adress = obj.adress;
+			$scope.gai.index = index;
+			$scope.showing = true;
+		}
+		$scope.change = function (index) {
+			if (index == 0) {
+				return;
+			}
+			var obj = $scope.arr[index];
+			$scope.arr[index] = $scope.arr[0];
+			$scope.arr[0] = obj;
+		}
+		$scope.addAdr = function () {
+			$scope.gai={};
+			$scope.showing = true;
+		}
+		$scope.del = function (index) {
+			$scope.arr.splice(index,1);
+		}
+		$scope.ok = function () {
+			if ($scope.gai.index == undefined) {
+				$scope.arr.push($scope.gai);
+			}else{
+				$scope.arr[$scope.gai.index].name = $scope.gai.name;
+				$scope.arr[$scope.gai.index].tel = $scope.gai.tel;
+				$scope.arr[$scope.gai.index].adress = $scope.gai.adress;
+			}
+			$scope.showing = false;
+		}
+		$scope.cancle = function () {
+			$scope.showing = false;
+		}
+	})
+</script>
